@@ -5,7 +5,11 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, List, Type, Search, BookOpen, Moon, Sun, ListOrdered, X, Loader2, Bookmark as BookmarkIcon, Trash2 } from 'lucide-react';
+import { 
+  Menu, X, Search, Moon, Sun, BookOpen, Clock, Heart, Share2, 
+  ChevronRight, ChevronLeft, Type, Volume2, Settings, List, 
+  MapPin, HelpCircle, Info, ListOrdered, Loader2, Bookmark as BookmarkIcon, Trash2
+} from 'lucide-react';
 import { Surah, Ayah, SurahDetail, TranslationAyah, Bookmark } from './types';
 
 const API_BASE = 'https://api.alquran.cloud/v1';
@@ -20,6 +24,7 @@ export default function App() {
   const [fontSize, setFontSize] = useState(32);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isTajweedEnabled, setIsTajweedEnabled] = useState(true);
+  const [showLegend, setShowLegend] = useState(false);
   const [isVerseSelectorOpen, setIsVerseSelectorOpen] = useState(false);
   const [verseSearchQuery, setVerseSearchQuery] = useState('');
   const [tajweedAyahs, setTajweedAyahs] = useState<Record<number, string>>({});
@@ -615,7 +620,59 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Floating Tajweed Legend */}
+      {isTajweedEnabled && (
+        <>
+          <motion.div 
+            className="tajweed-legend-fab fixed bottom-6 right-6 z-50 ltr"
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowLegend(!showLegend)}
+          >
+            <Info className="w-6 h-6" />
+          </motion.div>
+
+          <AnimatePresence>
+            {showLegend && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                className="tajweed-legend-card fixed bottom-24 right-6 z-50 ltr"
+              >
+                <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+                  <h3 className="font-bold text-emerald-600 dark:text-emerald-400">Tajweed Legend</h3>
+                  <button onClick={() => setShowLegend(false)} className="p-1 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                
+                <div className="space-y-1">
+                  {[
+                    { color: '#ff5722', label: 'Ghunnah', desc: 'Nasalization (Noon/Meem Mush)' },
+                    { color: '#2196f3', label: 'Mad', desc: 'Prolongation of vowel sounds' },
+                    { color: '#4caf50', label: 'Qalqalah', desc: 'Echoing or bouncing sound' },
+                    { color: '#ffc107', label: 'Ikhfa', desc: 'Hidden or light pronunciation' },
+                    { color: '#1976d2', label: 'Idgham', desc: 'Merging of two letters' },
+                    { color: '#009688', label: 'Iqlab', desc: 'Conversion to "Meem" sound' },
+                    { color: '#9e9e9e', label: 'Silent / Wasl', desc: 'Written but not pronounced' }
+                  ].map((item, i) => (
+                    <div key={i} className="legend-item">
+                      <div className="legend-dot" style={{ background: item.color }}></div>
+                      <div>
+                        <div className="legend-label">{item.label}</div>
+                        <div className="legend-desc">{item.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      )}
+
       {/* Footer / Navigation */}
+
       {!selectedSurah && (
         <footer className={`fixed bottom-0 left-0 right-0 border-t backdrop-blur-md ${isDarkMode ? 'bg-stone-900/80 border-stone-800' : 'bg-white/80 border-stone-200'}`}>
           <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-around">
