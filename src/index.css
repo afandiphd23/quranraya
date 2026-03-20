@@ -4,11 +4,59 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-arabic: "Amiri", serif;
+  /* Raya Theme Colors */
+  --raya-green-900: #064e3b;
+  --raya-green-600: #059669;
+  --raya-green-500: #10b981;
+  --raya-gold: #fbbf24;
+  --raya-gold-glow: rgba(251, 191, 36, 0.4);
 }
 
 body {
   @apply bg-stone-50 text-stone-900;
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(16, 185, 129, 0.05) 1px, transparent 0);
+  background-size: 40px 40px;
 }
+
+.dark body {
+  @apply bg-stone-950 text-stone-100;
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(251, 191, 36, 0.03) 1px, transparent 0);
+}
+
+.raya-gold-text {
+  color: var(--raya-gold);
+  text-shadow: 0 0 10px var(--raya-gold-glow);
+}
+
+.raya-gold-border {
+  border-color: var(--raya-gold);
+  box-shadow: 0 0 15px var(--raya-gold-glow);
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(var(--tw-rotate, 0deg)); }
+  50% { transform: translateY(-10px) rotate(var(--tw-rotate, 0deg)); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.animate-float-slow {
+  animation: float-slow 4s ease-in-out infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.raya-gradient {
+  background: linear-gradient(135deg, var(--raya-green-900) 0%, var(--raya-green-600) 100%);
+}
+
 
 .arabic-text {
   font-family: 'Amiri', serif;

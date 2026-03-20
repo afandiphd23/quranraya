@@ -14,7 +14,50 @@ import { Surah, Ayah, SurahDetail, TranslationAyah, Bookmark } from './types';
 
 const API_BASE = 'https://api.alquran.cloud/v1';
 
+const FestiveDecorations = () => {
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {/* Stars/Sparkles */}
+      {[...Array(20)].map((_, i) => (
+        <div 
+          key={`star-${i}`}
+          className="absolute animate-twinkle text-amber-400"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 5}s`,
+            fontSize: `${Math.random() * 10 + 5}px`
+          }}
+        >
+          ✦
+        </div>
+      ))}
+      
+      {/* Floating Ketupats */}
+      {[...Array(6)].map((_, i) => (
+        <div 
+          key={`ketupat-${i}`}
+          className="absolute animate-float-slow opacity-20 dark:opacity-10"
+          style={{
+            top: `${Math.random() * 80 + 10}%`,
+            left: `${i * 20}%`,
+            animationDelay: `${Math.random() * 10}s`,
+            transform: `rotate(${Math.random() * 30 - 15}deg)`
+          }}
+        >
+          <svg width="60" height="60" viewBox="0 0 40 40" fill="none">
+            <path d="M20 2L38 20L20 38L2 20L20 2Z" fill="#10B981" stroke="#fbbf24" strokeWidth="2"/>
+            <path d="M20 2V38M2 20H38" stroke="#fbbf24" strokeWidth="1" opacity="0.5"/>
+            <path d="M11 11L29 29M11 29L29 11" stroke="#fbbf24" strokeWidth="1" opacity="0.5"/>
+          </svg>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export default function App() {
+
   const [surahs, setSurahs] = useState<Surah[]>([]);
   const [selectedSurah, setSelectedSurah] = useState<number | null>(null);
   const [surahDetail, setSurahDetail] = useState<SurahDetail | null>(null);
@@ -221,11 +264,17 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'bg-stone-950 text-stone-100' : 'bg-stone-50 text-stone-900'}`}>
+    <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-stone-950 text-stone-100' : 'bg-stone-50 text-stone-900'} relative`}>
+      <FestiveDecorations />
+      
       {/* Header */}
-      <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${isDarkMode ? 'bg-stone-900/80 border-stone-800' : 'bg-white/80 border-stone-200'}`}>
-        <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <header className={`sticky top-0 z-40 backdrop-blur-md border-b transition-all duration-300 ${
+        isDarkMode 
+          ? 'bg-stone-900/80 border-stone-800' 
+          : 'bg-white/80 border-stone-200 shadow-sm'
+      }`}>
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3 min-w-0">
             {selectedSurah ? (
               <div className="flex items-center gap-1">
                 <button 
@@ -244,14 +293,22 @@ export default function App() {
                 </button>
               </div>
             ) : (
-              <div className="p-2 bg-emerald-600 rounded-lg text-white">
-                <BookOpen size={24} />
+              <div className="p-2 rounded-xl bg-emerald-600/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 raya-gold-border border">
+                <BookOpen className="w-6 h-6" />
               </div>
             )}
+            
             <div className="overflow-hidden">
-              <h1 className="font-bold text-lg leading-tight truncate">
-                {selectedSurah && surahDetail ? surahDetail.name : 'Al-Quran Digital'}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent truncate">
+                  {selectedSurah && surahDetail ? surahDetail.name : 'QuranRaya'}
+                </h1>
+                {!selectedSurah && (
+                  <span className="text-[10px] font-medium raya-gold-text animate-pulse whitespace-nowrap hidden sm:inline">
+                    Selamat Hari Raya Aidilfitri
+                  </span>
+                )}
+              </div>
               <p className="text-xs opacity-60 truncate">
                 {selectedSurah && surahDetail ? `${surahDetail.number}. ${surahDetail.englishName}` : 'Baca & Tadabbur'}
               </p>
@@ -283,7 +340,7 @@ export default function App() {
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             {selectedSurah && (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 hidden sm:flex">
                 <button 
                   onClick={() => setFontSize(prev => Math.max(24, prev - 4))}
                   className={`p-2 rounded-full hover:bg-stone-200/50 transition-colors ${isDarkMode ? 'hover:bg-stone-800' : ''}`}
@@ -303,6 +360,7 @@ export default function App() {
           </div>
         </div>
       </header>
+
 
       <main className="max-w-2xl mx-auto px-4 py-6">
         <AnimatePresence mode="wait">
